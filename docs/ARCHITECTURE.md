@@ -23,12 +23,17 @@ The control plane is a two-tier system orchestrated by Docker Compose:
 
 ### Web (`apps/web`)
 
-- Next.js 15 with the App Router and TypeScript.
-- Tailwind CSS for a clean operational dashboard layout.
-- Three dashboard regions:
-  - **System Status** — static runtime configuration.
-  - **Backend Status** — client-side live probe of `GET /health`.
-  - **Architecture Overview** — layered topology of the system.
+- Next.js 15 with the App Router and TypeScript (strict mode).
+- Tailwind CSS for a dark, operational dashboard theme.
+- Observability dashboard (Sprint 2) with a clear component split:
+  - `components/dashboard/` — `Dashboard` composition + `Header`.
+  - `components/metrics/` — `MetricsCards` (total / successful / failed / success-rate /
+    average latency, computed from `GET /runs`).
+  - `components/executions/` — `ExecutionTable`, `ExecutionDetail` (drawer with copy
+    actions), `NewExecutionForm`, and `LatencyTrendChart` (native SVG, no extra deps).
+  - `components/shared/` — `Skeleton`, `StatePanel` (empty/error), `CopyButton`.
+- Data access is centralized in `lib/api.ts`; `hooks/useExecutions.ts` polls `GET /runs`
+  every 5 seconds (guards against duplicate in-flight requests, cleans up its timer).
 - Built as a standalone image (`output: "standalone"`) for a minimal runtime.
 
 ### API (`apps/api`)

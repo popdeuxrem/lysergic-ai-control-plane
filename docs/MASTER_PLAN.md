@@ -14,8 +14,8 @@ hardware, with a clean operational dashboard and reproducible container-first de
 | ------ | ----- | ------ |
 | Sprint 0 — Foundation | Monorepo scaffold, FastAPI `/health`, Next.js dashboard, Docker Compose, CI | Done |
 | Sprint 1 — AI Execution | Fireworks adapter + `/execute`, `/runs`, SQLite persistence, dashboard execution panel | Done |
-| Sprint 2 — Persistence polish | Richer execution history, filters, metrics | Planned |
-| Sprint 3 — Polish | Dashboard metrics + submission assets | Planned |
+| Sprint 2 — Observability | Live metrics, history, detail, polling, latency chart (frontend) | Done |
+| Sprint 3 — Polish | README diagrams, screenshots, demo video, submission assets | Planned |
 
 ## Definition of Done (per sprint)
 

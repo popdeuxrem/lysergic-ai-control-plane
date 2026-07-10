@@ -33,13 +33,23 @@ Tracked status: `[x]` done · `[~]` in progress · `[ ]` planned.
 - [x] Tests: repository layer + `/execute` endpoint
 - [x] Docs + `.env.example` updated for Fireworks
 
-## Sprint 2 — Persistence
+## Sprint 2 — Observability dashboard
 
-- [ ] Execution history schema + migrations
-- [ ] Repository layer over SQLite
-- [ ] History query endpoints
+- [x] `hooks/useExecutions.ts` — 5s polling, no duplicate requests, timer cleanup
+- [x] `lib/api.ts` shared fetch helper (executions + execute, timeout/abort)
+- [x] `lib/metrics.ts` — total/successful/failed/success-rate/avg-latency
+- [x] `components/dashboard/Dashboard.tsx` + `Header.tsx`
+- [x] `components/metrics/MetricsCards.tsx` + `MetricCard.tsx`
+- [x] `components/executions/ExecutionTable.tsx` (newest first, row → detail)
+- [x] `components/executions/ExecutionDetail.tsx` (drawer: copy prompt/response, back)
+- [x] `components/executions/NewExecutionForm.tsx` (run a prompt)
+- [x] `components/executions/LatencyTrendChart.tsx` (native SVG, no deps)
+- [x] `components/shared/` — Skeleton, StatePanel (empty/error), CopyButton
+- [x] Loading skeletons, empty state, error/retry state
+- [x] Responsive dark operational theme
 
 ## Sprint 3 — Polish
 
-- [ ] Dashboard metrics (counts, latency)
-- [ ] Submission assets (demo script, screenshots)
+- [ ] README diagrams + screenshots
+- [ ] Demo video
+- [ ] Submission assets

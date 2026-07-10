@@ -86,3 +86,22 @@ the endpoint returns `502`.
 
 **Rationale:** Observable over opaque — the execution history should reflect reality (both
 successes and failures), and the dashboard can render error states from real records.
+
+## D-012 — Sprint 2 metrics computed client-side from `GET /runs`
+
+**Decision:** The dashboard metrics (total / successful / failed / success-rate / average
+latency) and the latency-trend chart are computed in the browser from the `GET /runs` payload.
+Sprint 2 made no backend changes.
+
+**Rationale:** Keeps the execution pipeline untouched and ships the observability layer as a
+pure frontend concern. Trade-off: metrics reflect the fetched window (default 50, raised to
+500 via the `limit` query param), not a global aggregate — acceptable for the MVP demo and
+called out as a known limitation.
+
+## D-013 — Latency chart uses native SVG, no chart dependency
+
+**Decision:** `LatencyTrendChart` renders an SVG polyline/area with `vectorEffect` scaling; no
+charting library is added.
+
+**Rationale:** Minimal dependencies; the chart is small, themeable, and updates automatically
+with the 5s polling data.

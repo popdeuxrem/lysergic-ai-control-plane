@@ -20,14 +20,15 @@ Browser
         └── SQLite (Python stdlib)           /data/lysergic.db
 ```
 
-- **Web** — Next.js 15 (App Router), TypeScript, Tailwind CSS.
+- **Web** — Next.js 15 (App Router), TypeScript, Tailwind CSS with an operational observability dashboard.
 - **API** — FastAPI, Pydantic v2, Uvicorn, Python 3.12.
 - **Inference** — Fireworks AI, accessed only through the `services/fireworks.py` adapter.
 - **Data** — SQLite, accessed through a repository layer (`app/repository`).
 - **Platform** — Docker Compose orchestrating both services.
 
-The dashboard exposes: System Status, Backend Status (live `/health` probe), an AI Execution
-panel (prompt input, response viewer, execution history), and an Architecture Overview.
+The dashboard exposes: live metrics (total / successful / failed / success-rate / average
+latency), an execution history table with a detail drawer, a native latency-trend chart, and a
+prompt composer — all polling `GET /runs` every 5 seconds.
 
 ## API
 
