@@ -39,17 +39,38 @@ The control plane is a two-tier system orchestrated by Docker Compose:
   - `logging.py` — structured JSON logging to stdout.
   - `database.py` — SQLite lifecycle + connection helper (Python stdlib).
   - `health.py` — health reporting logic.
-  - `schemas/` — Pydantic response models.
-  - `routers/` — API routes (currently `/health`).
-  - `services/`, `models/` — reserved for Sprint 1+.
+  - `schemas/` — Pydantic request/response models (`health`, `execution`).
+  - `routers/` — API routes (`health`, `executions`).
+  - `services/fireworks.py` — the only module that talks to the Fireworks AI provider.
+  - `repository/executions.py` — SQLite access for executions (no SQL in routers).
+  - `models/execution.py` — domain `Execution` dataclass.
 - Graceful startup/shutdown via the FastAPI `lifespan` context manager.
 - CORS configured from settings.
+
+### AI Execution flow
+
+```
+POST /execute
+  → routers/executions.py
+  → services/fireworks.generate(prompt)
+       → POST https://api.fireworks.ai/inference/v1/chat/completions
+       → retry once on transient failure (429/5xx/network)
+       → measures latency_ms
+  → repository.create_execution(...)
+  → return ExecutionOut
+```
+
+- `GET /runs` returns the latest executions ordered by insertion (most recent first).
+- `GET /runs/{id}` returns a single execution or `404`.
+- On a provider failure the execution is still persisted with `status="error"` and the
+  endpoint returns `502`, so the dashboard can show failures in history.
 
 ### Data
 
 - SQLite accessed through the Python standard library (`sqlite3`).
-- A single `init_db()` call ensures the database file and directory exist; connection
-  helper `get_connection()` yields a `sqlite3.Row`-backed connection.
+- A single `init_db()` call ensures the database file, directory, and the `executions` table
+  exist; connection helper `get_connection()` yields a `sqlite3.Row`-backed connection.
+- All execution SQL lives in `app/repository/executions.py`; routers never contain SQL.
 
 ### Platform
 

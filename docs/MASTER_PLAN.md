@@ -1,6 +1,6 @@
 # Master Plan
 
-This document tracks the delivery plan for the Lysergic AI Control Plane (AMD Developer
+This document tracks the delivery plan for the Lysergic Control Plane (AMD Developer
 Hackathon — Unicorn Track).
 
 ## Vision
@@ -12,9 +12,9 @@ hardware, with a clean operational dashboard and reproducible container-first de
 
 | Sprint | Scope | Status |
 | ------ | ----- | ------ |
-| Sprint 0 — Foundation | Monorepo scaffold, FastAPI `/health`, Next.js dashboard, Docker Compose, CI | In progress |
-| Sprint 1 — Inference | Fireworks AI integration + `/execute` endpoint | Planned |
-| Sprint 2 — Persistence | Execution history + SQLite persistence | Planned |
+| Sprint 0 — Foundation | Monorepo scaffold, FastAPI `/health`, Next.js dashboard, Docker Compose, CI | Done |
+| Sprint 1 — AI Execution | Fireworks adapter + `/execute`, `/runs`, SQLite persistence, dashboard execution panel | Done |
+| Sprint 2 — Persistence polish | Richer execution history, filters, metrics | Planned |
 | Sprint 3 — Polish | Dashboard metrics + submission assets | Planned |
 
 ## Definition of Done (per sprint)

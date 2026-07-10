@@ -58,3 +58,31 @@ build-risk for the submission.
 
 **Rationale:** The browser always talks to the host-mapped API port; runtime config via env
 is unnecessary for this topology.
+
+## D-009 — Fireworks as an adapter behind `services/fireworks.py`
+
+**Decision:** All provider communication lives in `app/services/fireworks.py`. Routers and the
+rest of the app call `fireworks.generate(prompt)` and never touch the Fireworks API directly.
+
+**Rationale:** Isolates the external dependency, makes the provider swappable, and keeps the
+endpoint logic about the domain (persist + respond), not transport. The adapter reads
+`FIREWORKS_API_KEY`, uses a configurable `FIREWORKS_MODEL` and `FIREWORKS_TIMEOUT`, retries once
+on transient failures (429/5xx/network errors), measures `latency_ms`, and returns a
+normalized `FireworksResult`.
+
+## D-010 — Provider env vars are unprefixed
+
+**Decision:** Provider credentials use `FIREWORKS_API_KEY` / `FIREWORKS_MODEL` /
+`FIREWORKS_TIMEOUT` (no `APP_` prefix); app settings keep the `APP_` prefix.
+
+**Rationale:** Provider keys are conventionally unprefixed secrets; `pydantic-settings`
+`validation_alias` with `AliasChoices` reads the unprefixed name while preserving `APP_`
+fallbacks.
+
+## D-011 — Persist failures too
+
+**Decision:** A failed provider call is persisted as an execution with `status="error"` and
+the endpoint returns `502`.
+
+**Rationale:** Observable over opaque — the execution history should reflect reality (both
+successes and failures), and the dashboard can render error states from real records.

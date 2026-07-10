@@ -1,7 +1,7 @@
 .PHONY: help install-api install-web dev-api dev-web build up down logs test lint ci
 
 help:
-	@echo "Lysergic AI Control Plane — make targets"
+	@echo "Lysergic Control Plane — make targets"
 	@echo ""
 	@echo "  install-api   Install Python API dependencies"
 	@echo "  install-web   Install frontend dependencies"

@@ -7,6 +7,9 @@ services:
       APP_DATABASE_URL: sqlite:////data/lysergic.db
       APP_CORS_ORIGINS: "http://localhost:3000,http://web:3000"
       APP_LOG_LEVEL: INFO
+      FIREWORKS_API_KEY: ${FIREWORKS_API_KEY:-}
+      FIREWORKS_MODEL: ${FIREWORKS_MODEL:-accounts/fireworks/models/llama-v3p1-8b-instruct}
+      FIREWORKS_TIMEOUT: ${FIREWORKS_TIMEOUT:-30}
     ports:
       - "8000:8000"
     volumes:

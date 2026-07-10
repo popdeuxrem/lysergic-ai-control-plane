@@ -1,31 +1,64 @@
-# Lysergic AI Control Plane
+# Lysergic Control Plane
 
 > AMD Developer Hackathon — Unicorn Track submission.
 
-A production-quality foundation for orchestrating and observing AI workloads across AMD
-hardware. This repository currently contains **Sprint 0 (Foundation)**: a buildable,
+Production infrastructure for reliable AI execution. This repository contains a
 container-first monorepo with a FastAPI backend, a Next.js operational dashboard, and a
-Docker Compose deployment.
+Docker Compose deployment. The core capability is **AI Execution**: the dashboard submits a
+prompt, the API runs it through the Fireworks AI adapter, persists the execution to SQLite,
+and returns the result.
 
 ## Architecture
 
 ```
 Browser
   └── Next.js 15 dashboard (apps/web)        :3000
-        │  HTTP /health
+        │  HTTP /execute, /runs
         ▼
       FastAPI service (apps/api)             :8000
+        ├── services/fireworks.py  ─────────▶  Fireworks AI
         └── SQLite (Python stdlib)           /data/lysergic.db
 ```
 
 - **Web** — Next.js 15 (App Router), TypeScript, Tailwind CSS.
 - **API** — FastAPI, Pydantic v2, Uvicorn, Python 3.12.
-- **Data** — SQLite, accessed through a thin `database.py` layer.
+- **Inference** — Fireworks AI, accessed only through the `services/fireworks.py` adapter.
+- **Data** — SQLite, accessed through a repository layer (`app/repository`).
 - **Platform** — Docker Compose orchestrating both services.
 
-The dashboard exposes: System Status, Backend Status (live `/health` probe), and an
-Architecture Overview. No AI inference, authentication, or business logic is implemented
-yet — those arrive in later sprints.
+The dashboard exposes: System Status, Backend Status (live `/health` probe), an AI Execution
+panel (prompt input, response viewer, execution history), and an Architecture Overview.
+
+## API
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| `GET`  | `/health` | Service health check. |
+| `POST` | `/execute` | Run a prompt through Fireworks AI and persist the execution. |
+| `GET`  | `/runs` | List the latest executions (most recent first). |
+| `GET`  | `/runs/{id}` | Fetch a single execution by id. |
+
+`POST /execute` request:
+
+```json
+{ "prompt": "Explain AMD ROCm in one sentence." }
+```
+
+`POST /execute` response:
+
+```json
+{
+  "id": "9f2c…",
+  "prompt": "Explain AMD ROCm in one sentence.",
+  "response": "ROCm is AMD's open GPU compute platform…",
+  "model": "accounts/fireworks/models/llama-v3p1-8b-instruct",
+  "latency_ms": 412,
+  "status": "success",
+  "created_at": "2026-07-10T22:00:00.000000+00:00"
+}
+```
+
+On a provider failure the API persists an `error` execution and returns `502`.
 
 ## Quick Start
 
@@ -47,12 +80,14 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The dashboard probes `http://localhost:8000/health`.
+Open http://localhost:3000. The dashboard probes `http://localhost:8000/health` and calls
+`/execute` and `/runs` on the same API. Set `FIREWORKS_API_KEY` in the environment before
+running the backend so executions reach the provider.
 
 ### Docker
 
 ```bash
-cp .env.example .env   # optional, defaults work out of the box
+cp .env.example .env       # set FIREWORKS_API_KEY
 docker compose up --build
 ```
 
@@ -75,15 +110,16 @@ make up            # docker compose up
 make logs          # tail logs
 ```
 
-Environment variables are prefixed with `APP_` for the API (see `.env.example`) and
-`NEXT_PUBLIC_API_URL` for the web client.
+Environment variables: API settings use the `APP_` prefix (see `.env.example`); provider
+credentials use `FIREWORKS_API_KEY` / `FIREWORKS_MODEL`; the web client uses
+`NEXT_PUBLIC_API_URL`.
 
 ## Roadmap
 
-- **Sprint 0 — Foundation** (current): scaffold, `/health`, dashboard, Docker, CI.
-- **Sprint 1**: Fireworks AI integration + `/execute` endpoint.
-- **Sprint 2**: Execution history + SQLite persistence.
-- **Sprint 3**: Dashboard metrics + submission assets.
+- **Sprint 0 — Foundation**: scaffold, `/health`, dashboard, Docker, CI.
+- **Sprint 1 — AI Execution** (current): Fireworks AI adapter + `/execute`, `/runs`, SQLite persistence, dashboard execution panel.
+- **Sprint 2 — Persistence polish**: richer execution history, filters, metrics.
+- **Sprint 3 — Polish**: Dashboard metrics + submission assets.
 
 See [`docs/`](./docs) for the master plan, architecture detail, task tracking, and
 decision log.

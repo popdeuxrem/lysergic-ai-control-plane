@@ -1,5 +1,6 @@
 import ArchitectureOverview from "@/components/ArchitectureOverview";
 import BackendStatus from "@/components/BackendStatus";
+import ExecutionPanel from "@/components/ExecutionPanel";
 import SystemStatus from "@/components/SystemStatus";
 
 export default function DashboardPage() {
@@ -10,17 +11,21 @@ export default function DashboardPage() {
           AMD Developer Hackathon · Unicorn Track
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-white">
-          Lysergic AI Control Plane
+          Lysergic Control Plane
         </h1>
         <p className="mt-2 max-w-2xl text-slate-400">
-          Operational dashboard for orchestrating and observing AI workloads across AMD
-          hardware.
+          Production infrastructure for reliable AI execution. Orchestrate and observe
+          inference workloads across AMD hardware.
         </p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-2">
         <SystemStatus />
         <BackendStatus />
+      </div>
+
+      <div className="mt-6">
+        <ExecutionPanel />
       </div>
 
       <div className="mt-6">

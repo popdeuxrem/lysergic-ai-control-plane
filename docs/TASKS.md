@@ -21,11 +21,17 @@ Tracked status: `[x]` done · `[~]` in progress · `[ ]` planned.
 - [x] Docs: MASTER_PLAN, ARCHITECTURE, TASKS, DECISIONS
 - [x] Tooling: Makefile, `.env.example`, `.gitignore`
 
-## Sprint 1 — Fireworks AI integration
+## Sprint 1 — AI Execution
 
-- [ ] Fireworks client/service
-- [ ] `POST /execute` endpoint + schema
-- [ ] Error handling for provider failures
+- [x] `services/fireworks.py` adapter (env key, configurable model/timeout, retry-once, latency, logging)
+- [x] `POST /execute` endpoint (request → Fireworks → persist → respond)
+- [x] `GET /runs` (latest executions) and `GET /runs/{id}`
+- [x] `Execution` model + `ExecutionOut` schema
+- [x] Repository layer over SQLite (`app/repository/executions.py`)
+- [x] `executions` table migration in `database.init_db`
+- [x] Frontend execution panel (prompt, execute, response viewer, history, loading/error)
+- [x] Tests: repository layer + `/execute` endpoint
+- [x] Docs + `.env.example` updated for Fireworks
 
 ## Sprint 2 — Persistence
 

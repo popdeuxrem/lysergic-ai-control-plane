@@ -1,5 +1,5 @@
 const systemItems: ReadonlyArray<{ label: string; value: string }> = [
-  { label: "Control Plane", value: "Lysergic AI" },
+  { label: "Control Plane", value: "Lysergic" },
   { label: "Environment", value: process.env.NODE_ENV === "production" ? "Production" : "Development" },
   { label: "Web", value: "Next.js 15" },
   { label: "API", value: "FastAPI · Python 3.12" },

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import init_db
 from app.logging import configure_logging
+from app.routers.executions import router as executions_router
 from app.routers.health import router as health_router
 
 logger = getLogger("api")
@@ -26,9 +27,9 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Lysergic AI Control Plane API",
-        version="0.1.0",
-        description="Operational API for the Lysergic AI Control Plane (Sprint 0 foundation).",
+        title="Lysergic Control Plane API",
+        version="0.2.0",
+        description="Operational API for the Lysergic Control Plane (Sprint 1: AI execution).",
         lifespan=lifespan,
     )
 
@@ -41,6 +42,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(health_router)
+    app.include_router(executions_router)
 
     @app.get("/", tags=["root"])
     def root() -> dict[str, str]:
