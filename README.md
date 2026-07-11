@@ -3,6 +3,13 @@
 > Operational infrastructure for reliable AI execution.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
+[![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![SQLite](https://img.shields.io/badge/DB-SQLite-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Fireworks AI](https://img.shields.io/badge/Inference-Fireworks%20AI-FF6B00)](https://fireworks.ai/)
 
 **Lysergic Control Plane** is a production-oriented AI execution platform that brings
 observability, persistence, and operational workflows to LLM-powered applications. It turns a
@@ -100,22 +107,40 @@ docker compose up --build
 - API: http://localhost:8000 (interactive docs at `/docs`)
 - Web: http://localhost:3000
 
+### Codespaces / public deployment
+
+To run the stack where the dashboard is opened from a different machine (e.g. GitHub Codespaces or a
+phone), set two variables before building so the web client calls the **public** backend URL and the
+API accepts the forwarded web origin:
+
+```bash
+export WEB_API_URL="https://<codespace>-8000.app.github.dev"
+export CORS_ORIGINS="http://localhost:3000,http://web:3000,https://<codespace>-3000.app.github.dev"
+docker compose up --build
+```
+
+Then make ports **3000** and **8000** _Public_ in the Codespaces Ports panel. `CORS_ORIGINS` is not
+prefixed; `WEB_API_URL` is injected into the web image at build time.
+
 ## Environment Variables
 
-API settings use the `APP_` prefix. Provider credentials use the unprefixed `FIREWORKS_*`
-names. The web client uses `NEXT_PUBLIC_API_URL`.
+API settings use the `APP_` prefix. Provider credentials use the unprefixed `FIREWORKS_*` names. The
+web client uses `NEXT_PUBLIC_API_URL` (inlined at build time). `CORS_ORIGINS` and `WEB_API_URL` are
+deployment-only overrides read by `docker-compose.yml`.
 
 | Variable | Scope | Default | Purpose |
 | --- | --- | --- | --- |
 | `APP_ENVIRONMENT` | API | `development` | Runtime environment. |
 | `APP_API_HOST` / `APP_API_PORT` | API | `0.0.0.0` / `8000` | Bind address. |
 | `APP_CORS_ORIGINS` | API | `*` | Comma-separated allowed origins. |
+| `CORS_ORIGINS` | Compose | `http://localhost:3000,http://web:3000` | Allowed CORS origins when deployed (overrides `APP_CORS_ORIGINS`). |
 | `APP_DATABASE_URL` | API | `sqlite:///./lysergic.db` | SQLite connection URL. |
 | `APP_LOG_LEVEL` | API | `INFO` | Log level. |
 | `FIREWORKS_API_KEY` | API | _(empty)_ | Fireworks AI API key. |
-| `FIREWORKS_MODEL` | API | `accounts/fireworks/models/llama-v3p1-8b-instruct` | Model name. |
+| `FIREWORKS_MODEL` | API | `accounts/fireworks/models/gpt-oss-120b` | Model name. |
 | `FIREWORKS_TIMEOUT` | API | `30` | Provider request timeout (seconds). |
 | `NEXT_PUBLIC_API_URL` | Web | `http://localhost:8000` | API base URL (inlined at build). |
+| `WEB_API_URL` | Compose | `http://localhost:8000` | API base URL baked into the web image. |
 
 ## API
 

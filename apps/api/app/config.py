@@ -1,7 +1,7 @@
 from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-DEFAULT_FIREWORKS_MODEL = "accounts/fireworks/models/llama-v3p1-8b-instruct"
+DEFAULT_FIREWORKS_MODEL = "accounts/fireworks/models/gpt-oss-120b"
 
 
 class Settings(BaseSettings):

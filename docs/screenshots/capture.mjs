@@ -47,20 +47,23 @@ await page.waitForTimeout(6000);
 await page.screenshot({ path: path.join(outDir, "dashboard.png") });
 
 await page.getByRole("button", { name: "New Execution" }).click();
+await page.getByPlaceholder("Ask the model something…").waitFor({ state: "visible", timeout: 5000 });
+await page.screenshot({ path: path.join(outDir, "execute.png") });
+
 await page.getByPlaceholder("Ask the model something…").fill("Explain AMD ROCm in one sentence.");
 await page.getByRole("button", { name: "Execute" }).click();
-await page.waitForTimeout(400);
-await page.screenshot({ path: path.join(outDir, "execute.png") });
-await page.waitForTimeout(6000);
-
+await page.waitForTimeout(4000);
 await page.screenshot({ path: path.join(outDir, "history.png") });
 
-const firstRow = page.locator("table tbody tr").first();
-if (await firstRow.count()) {
-  await firstRow.click();
-  await page.waitForTimeout(500);
-  await page.screenshot({ path: path.join(outDir, "detail.png") });
+try {
+  const firstView = page.getByRole("button", { name: "View" }).first();
+  await firstView.click({ timeout: 8000 });
+  await page.getByText("Execution Detail").first().waitFor({ timeout: 8000 });
+  await page.waitForTimeout(900);
+} catch (err) {
+  console.error("detail row click failed:", err instanceof Error ? err.message : err);
 }
+await page.screenshot({ path: path.join(outDir, "detail.png") });
 
 await browser.close();
 console.log(`Screenshots written to ${outDir}`);
